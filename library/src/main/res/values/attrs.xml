@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleProgressView">
+        <attr name="CircleProgressView_progress" format="float"/>
+        <attr name="CircleProgressView_stroke" format="dimension"/>
+        <attr name="CircleProgressView_backgroundColor" format="color"/>
+        <attr name="CircleProgressView_foregroundColor" format="color"/>
+        <attr name="CircleProgressView_circleBackgroundColor" format="color"/>
+    </declare-styleable>
+</resources>
