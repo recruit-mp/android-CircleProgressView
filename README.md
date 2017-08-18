@@ -11,7 +11,7 @@ Gradle:
 app's build.gradle
 
 ```groovy
-compile 'jp.co.recruit_mp:android-CircleProgressView:1.0'
+compile 'jp.co.recruit_mp:android-CircleProgressView:1.1'
 ```
 
 ## Usage
