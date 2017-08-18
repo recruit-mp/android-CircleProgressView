@@ -3,7 +3,8 @@
 
     <string name="demo">Demo</string>
     <string name="progress">Progress</string>
-    <string name="stroke">Stroke</string>
+    <string name="foreground_stroke">Foreground stroke</string>
+    <string name="background_stroke">Background stroke</string>
     <string name="animate_demo">Animate demo</string>
     <string name="change_color_demo">Change color demo</string>
 </resources>

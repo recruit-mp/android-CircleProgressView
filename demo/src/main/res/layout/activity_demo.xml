@@ -15,7 +15,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="16dp"
         app:CircleProgressView_progress="0.45"
-        app:CircleProgressView_stroke="14dp"
+        app:CircleProgressView_foregroundStroke="14dp"
+        app:CircleProgressView_backgroundStroke="14dp"
         app:CircleProgressView_foregroundColor="@color/demo_orange"
         app:CircleProgressView_backgroundColor="@color/demo_brown"/>
 
@@ -77,10 +78,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/stroke"/>
+                        android:text="@string/foreground_stroke"/>
 
                     <SeekBar
-                        android:id="@+id/seekBar_stroke"
+                        android:id="@+id/seekBar_foreground_stroke"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -88,7 +89,36 @@
                         android:max="3000"/>
 
                     <TextView
-                        android:id="@+id/textview_stroke"
+                        android:id="@+id/textview_foreground_stroke"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4dp"
+                        android:gravity="right"
+                        android:minWidth="32sp"
+                        tools:text="0.0"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/background_stroke"/>
+
+                    <SeekBar
+                        android:id="@+id/seekBar_background_stroke"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:indeterminate="false"
+                        android:max="3000"/>
+
+                    <TextView
+                        android:id="@+id/textview_background_stroke"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="4dp"

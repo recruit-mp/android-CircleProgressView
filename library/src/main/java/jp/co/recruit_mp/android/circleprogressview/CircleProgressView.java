@@ -33,8 +33,13 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 public class CircleProgressView extends View {
+    private static final int BEGINNING_ANGLE = -90;
+
     @IntRange(from = 0)
-    private int mStrokeWidthPx = 12;
+    private int mForegroundStrokeWidthPx = 12;
+
+    @IntRange(from = 0)
+    private int mBackgroundStrokeWidthPx = 12;
 
     @FloatRange(from = 0, to = 1)
     private float mProgress = 0;
@@ -44,8 +49,6 @@ public class CircleProgressView extends View {
     private int mBackgroundColor = Color.GRAY;
 
     private int mCircleBackgroundColor = Color.TRANSPARENT;
-
-    private int mBeginningAngle = -90;
 
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -74,18 +77,32 @@ public class CircleProgressView extends View {
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressView);
             try {
-                mStrokeWidthPx = typedArray.getDimensionPixelSize(R.styleable.CircleProgressView_CircleProgressView_stroke, mStrokeWidthPx);
-                if (mStrokeWidthPx < 0) {
-                    mStrokeWidthPx = 0;
+                if (typedArray.hasValue(R.styleable.CircleProgressView_CircleProgressView_stroke)) {
+                    int stroke = typedArray.getDimensionPixelSize(R.styleable.CircleProgressView_CircleProgressView_stroke, mForegroundStrokeWidthPx);
+                    mForegroundStrokeWidthPx = mBackgroundStrokeWidthPx = (stroke >= 0) ? stroke : 0;
                 }
+
+                if (typedArray.hasValue(R.styleable.CircleProgressView_CircleProgressView_foregroundStroke)) {
+                    int stroke = typedArray.getDimensionPixelSize(R.styleable.CircleProgressView_CircleProgressView_foregroundStroke, mForegroundStrokeWidthPx);
+                    mForegroundStrokeWidthPx = (stroke >= 0) ? stroke : 0;
+                }
+
+                if (typedArray.hasValue(R.styleable.CircleProgressView_CircleProgressView_backgroundStroke)) {
+                    int stroke = typedArray.getDimensionPixelSize(R.styleable.CircleProgressView_CircleProgressView_backgroundStroke, mBackgroundStrokeWidthPx);
+                    mBackgroundStrokeWidthPx = (stroke >= 0) ? stroke : 0;
+                }
+
                 mProgress = typedArray.getFloat(R.styleable.CircleProgressView_CircleProgressView_progress, mProgress);
                 if (mProgress < 0) {
                     mProgress = 0;
                 } else if (mProgress > 1) {
                     mProgress = 1;
                 }
+
                 mForegroundColor = typedArray.getColor(R.styleable.CircleProgressView_CircleProgressView_foregroundColor, mForegroundColor);
+
                 mBackgroundColor = typedArray.getColor(R.styleable.CircleProgressView_CircleProgressView_backgroundColor, mBackgroundColor);
+
                 mCircleBackgroundColor = typedArray.getColor(R.styleable.CircleProgressView_CircleProgressView_circleBackgroundColor, mCircleBackgroundColor);
             } finally {
                 typedArray.recycle();
@@ -94,12 +111,12 @@ public class CircleProgressView extends View {
 
         // Foreground Paint
         mForegroundPaint.setStyle(Paint.Style.STROKE);
-        mForegroundPaint.setStrokeWidth(mStrokeWidthPx);
+        mForegroundPaint.setStrokeWidth(mForegroundStrokeWidthPx);
         mForegroundPaint.setColor(mForegroundColor);
 
         // Background Paint
         mBackgroundPaint.setStyle(Paint.Style.STROKE);
-        mBackgroundPaint.setStrokeWidth(mStrokeWidthPx);
+        mBackgroundPaint.setStrokeWidth(mBackgroundStrokeWidthPx);
         mBackgroundPaint.setColor(mBackgroundColor);
 
         // Circle background Paint
@@ -114,7 +131,7 @@ public class CircleProgressView extends View {
         canvas.drawCircle(mRectF.centerX(), mRectF.centerY(), mRectF.width() / 2, mCircleBackgroundPaint);
         canvas.drawOval(mRectF, mBackgroundPaint);
         float angle = 360 * mProgress;
-        canvas.drawArc(mRectF, mBeginningAngle, angle, false, mForegroundPaint);
+        canvas.drawArc(mRectF, BEGINNING_ANGLE, angle, false, mForegroundPaint);
     }
 
     @Override
@@ -122,25 +139,43 @@ public class CircleProgressView extends View {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         final int min = Math.min(widthSize, heightSize);
-        mRectF.set(mStrokeWidthPx / 2, mStrokeWidthPx / 2, min - mStrokeWidthPx / 2, min - mStrokeWidthPx / 2);
+        final int stroke = Math.max(mForegroundStrokeWidthPx, mBackgroundStrokeWidthPx);
+        mRectF.set(stroke / 2, stroke / 2, min - stroke / 2, min - stroke / 2);
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    @Deprecated
     @IntRange(from = 0)
     public int getStrokeWidthPx() {
-        return mStrokeWidthPx;
+        return mForegroundStrokeWidthPx;
     }
 
-    public void setStrokeWidthPx(@IntRange(from = 0) int strokeWidthPx) {
-        if (strokeWidthPx > 0) {
-            mStrokeWidthPx = strokeWidthPx;
-        } else {
-            mStrokeWidthPx = 0;
-        }
+    public void setStrokeWidthPx(@IntRange(from = 0) int stroke) {
+        setForegroundStrokeWidthPx(stroke);
+        setBackgroundStrokeWidthPx(stroke);
+    }
 
-        mForegroundPaint.setStrokeWidth(mStrokeWidthPx);
-        mBackgroundPaint.setStrokeWidth(mStrokeWidthPx);
+    @IntRange(from = 0)
+    public int getForegroundStrokeWidthPx() {
+        return mForegroundStrokeWidthPx;
+    }
+
+    public void setForegroundStrokeWidthPx(@IntRange(from = 0) int stroke) {
+        mForegroundStrokeWidthPx = (stroke > 0) ? stroke : 0;
+        mForegroundPaint.setStrokeWidth(mForegroundStrokeWidthPx);
+        invalidate();
+        requestLayout();
+    }
+
+    @IntRange(from = 0)
+    public int getBackgroundStrokeWidthPx() {
+        return mBackgroundStrokeWidthPx;
+    }
+
+    public void setBackgroundStrokeWidthPx(@IntRange(from = 0) int stroke) {
+        mBackgroundStrokeWidthPx = (stroke > 0) ? stroke : 0;
+        mBackgroundPaint.setStrokeWidth(mBackgroundStrokeWidthPx);
         invalidate();
         requestLayout();
     }
